@@ -17,16 +17,19 @@ create table student(
 drop table student;
 alter table student rename column student_id to class_room_id;
 
+insert into class_room(id, capacity) values('K001', 50);
+insert into class_room(id, capacity) values('K002', 40);
+insert into class_room(id, capacity) values('K003', 30);
+select * from class_room;
+
 create table prodi(
     kode VARCHAR2(10),
     prodi_name VARCHAR2(50),
     constraint pk_prodi primary key(kode)
 );
-
-insert into class_room(id, capacity) values('K001', 50);
-insert into class_room(id, capacity) values('K002', 40);
-insert into class_room(id, capacity) values('K003', 30);
-select * from class_room;
+insert into prodi values('MI', 'A');
+insert into prodi values('TK' 'B');
+insert into prodi values('KA', 'C');
 
 --K001
 insert into student(student_nim, student_name, birth_date, class_room_id) values('N0001', 'Muhammad', SYSDATE, 'K001');
