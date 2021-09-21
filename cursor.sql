@@ -10,9 +10,8 @@ create table student(
     student_name VARCHAR2(50),
     birth_date DATE,
     class_room_id VARCHAR2(10),
-    prodi_kode VARCHAR2(10),
     constraint pk_student PRIMARY KEY (id),
-    constraint fk_class_room_id foreign key(class_room_id) references class_room(id),
+    constraint fk_class_room_id foreign key(class_room_id) references class_room(id)
 );
 drop table student;
 alter table student rename column student_id to class_room_id;
@@ -22,14 +21,32 @@ insert into class_room(id, capacity) values('K002', 40);
 insert into class_room(id, capacity) values('K003', 30);
 select * from class_room;
 
+-- Table prodi
 create table prodi(
     kode VARCHAR2(10),
     prodi_name VARCHAR2(50),
     constraint pk_prodi primary key(kode)
 );
 insert into prodi values('MI', 'A');
-insert into prodi values('TK' 'B');
+insert into prodi values('TK', 'B');
 insert into prodi values('KA', 'C');
+
+-- Table mahasiswa
+create table mahasiswa(
+    kode_mhs VARCHAR2(15),
+    namamhs varchar2(40),
+    email varchar2(30),
+    alamat varchar2(40),
+    prodi_kode VARCHAR2(10),
+    constraint pk_mahasiswa primary key (kode_mhs),
+    constraint fk_prodi_kode foreign key(prodi_kode) references prodi(kode)
+);
+insert into mahasiswa values('10010101', 'Muhammad', 'muhamad@ui.ac.id', 'Jakarta Timur-Jatinegara', 'TK');
+insert into mahasiswa values('10010102', 'Abu Bakrin', 'abubakrin@ui.ac.id', 'Jakarta Timur, Cipinang', 'KA');
+insert into mahasiswa values('10010103', 'Umar', 'umar@ui.ac.id', 'Jakarta Timur, Prumpung', 'TK');
+insert into mahasiswa values('10010104', 'Usman', 'usman@ui.ac.id', 'Jakarta Timur, Pisangan Lama', 'TK');
+insert into mahasiswa values('10010105', 'Ali', 'ali@ui.ac.id', 'Jakarta Timur, Pisangan Baru', 'MI');
+select * from mahasiswa;
 
 --K001
 insert into student(student_nim, student_name, birth_date, class_room_id) values('N0001', 'Muhammad', SYSDATE, 'K001');
@@ -76,7 +93,7 @@ BEGIN
     dbms_output.put_line(v_total_student);
 END;
 
---Check if class_room full or not
+--Check if class_room full or not with IMPLICIT CURSOR
 declare
     v_capacity NUMBER;
     v_total_student NUMBER;
@@ -93,3 +110,17 @@ begin
         COMMIT;
     end IF;
 end;
+
+
+-- EXPLICIT CURSOR
+DECLARE
+    CURSOR csatu(kode1 VARCHAR2) IS SELECT kode FROM prodi where prodi_name=kode1;
+    CURSOR cdua(kode2 VARCHAR2) IS SELECT kode_mhs, namamhs, email, prodi_kode FROM mahasiswa where prodi_kode=kode2;
+BEGIN
+    FOR i IN csatu('B') LOOP
+        dbms_output.put_line(i.kode);
+        FOR j in cdua(i.kode) LOOP
+            dbms_output.put_line(j.kode_mhs || ' ' || j.namamhs ||  ' ' || i.kode);
+        END LOOP;
+    END LOOP;
+END;
